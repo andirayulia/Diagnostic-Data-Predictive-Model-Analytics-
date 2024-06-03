@@ -1,0 +1,98 @@
+---
+title: "Final Exam ADD"
+author: "Andira_5026211038"
+date: "2023-12-19"
+output: html_document
+---
+
+```{r}
+summary(SDI_Data_Stunting_Kabupaten_Kota)
+```
+
+```{r}
+#Membuat scatter plot untuk melihat hubungan antara jumlah balita dengan stunting anak
+plot(SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`, SDI_Data_Stunting_Kabupaten_Kota$`Stunting Pendek (Anak)`, type='p', col='blue')
+plot(SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`, SDI_Data_Stunting_Kabupaten_Kota$`Stunting Sangat Pendek (Anak)`, type='p', col='yellow')
+plot(SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`, SDI_Data_Stunting_Kabupaten_Kota$`Prevalensi (%)`, type='p', col='black')
+
+```
+
+#Mencari korelasi variabel stunting dengan jumlah balita
+```{r}
+selected_cols <- c("Jumlah Balita", "Stunting Sangat Pendek (Anak)", "Stunting Pendek (Anak)", "Prevalensi (%)")
+cor_stunting <- cor(SDI_Data_Stunting_Kabupaten_Kota[, selected_cols])
+cor_stunting
+```
+```{r}
+library(corrplot)
+corrplot(cor_stunting,method='color')
+corrplot(cor_stunting,method='number', number.digits=2)
+corrplot(cor_stunting,method='number', number.digits=2, bg='black')
+```
+```{r}
+model <- lm(`Jumlah Balita` ~ `Stunting Pendek (Anak)`+ `Stunting Sangat Pendek (Anak)`+ `Prevalensi (%)`, data = SDI_Data_Stunting_Kabupaten_Kota)
+summary(model)
+```
+
+```{r}
+model_1 <- lm(`Jumlah Balita` ~ `Stunting Pendek (Anak)`, data=SDI_Data_Stunting_Kabupaten_Kota)
+summary(model_1)
+```
+```{r}
+plot(model_1$residuals ~ SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`)
+abline(h = 0, lty =3)
+qqnorm(model_1$residuals)
+qqline(model_1$residuals)
+```
+
+```{r}
+model_2 <- lm(`Jumlah Balita` ~ `Stunting Sangat Pendek (Anak)`, data=SDI_Data_Stunting_Kabupaten_Kota)
+summary(model_2)
+```
+```{r}
+plot(model_2$residuals ~ SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`)
+abline(h = 0, lty =3)
+qqnorm(model_2$residuals)
+qqline(model_2$residuals)
+```
+
+```{r}
+model_3 <- lm(`Jumlah Balita` ~ `Prevalensi (%)`, data=SDI_Data_Stunting_Kabupaten_Kota)
+summary(model_3)
+```
+```{r}
+plot(model_3$residuals ~ SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`)
+abline(h = 0, lty =3)
+
+qqnorm(model_3$residuals)
+qqline(model_3$residuals)
+
+```
+
+```{r}
+correlation <- cor(SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`, SDI_Data_Stunting_Kabupaten_Kota$`Stunting Pendek (Anak)`)
+```
+
+```{r}
+plot(SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`, SDI_Data_Stunting_Kabupaten_Kota$`Stunting Pendek (Anak)`,
+     main = "Scatter Plot Jumlah Balita vs. Jumlah Stunting Pendek (Anak)",
+     xlab = "Jumlah Balita",
+     ylab = "Stunting Pendek (Anak)")
+
+#Menambahkan garis tren
+abline(lm(SDI_Data_Stunting_Kabupaten_Kota$`Stunting Pendek (Anak)` ~ SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`), col = "yellow")
+
+#Menampilkan besar korelasi
+text(20000, 10000, labels = paste("Korelasi:", round(correlation, 2)), col = "blue")
+
+# Menambahkan teks untuk variabel yang merupakan outlier
+text(SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`, SDI_Data_Stunting_Kabupaten_Kota$`Stunting Pendek (Anak)`,
+     labels = ifelse(abs(residuals) > outlier_limit, as.character(SDI_Data_Stunting_Kabupaten_Kota$`Jumlah Balita`), ""),
+     pos = 2, col = "red", cex = 0.7)
+
+```
+
+
+
+
+
